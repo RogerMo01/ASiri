@@ -3,7 +3,7 @@ from typing import Any
 from dotenv import load_dotenv
 import google.generativeai as genai
 from google.generativeai.types import *
-from llm import LLM
+from src.llm import LLM
 
 
 class Gemini(LLM):
@@ -30,11 +30,5 @@ class Gemini(LLM):
             safety_settings=safety_settings
         )
         
-        return response.text 
-
-
-model = Gemini()
-while True:
-    message = input("input: ")
-    response = model(message)
-    print(response)
+        return response.text
+    
