@@ -1,19 +1,46 @@
 import streamlit as st
 import random
-import time
+import time as t
 from src.gemini import Gemini
-
+from src.prompts import *
+from datetime import *
+import pandas as pd
+import os
 client = Gemini()
 
 # Streamed response emulator
 def response_generator(last_msg):
+    #lo que va a cambiar aqui realmente es last_msg que va a tener todo el prompt
+
+    print("KJKJKJLJK EXEC")
     
-    response = client(last_msg)
+    crud_operation_prompt = define_CRUD(last_msg)
+    
+    crud_operation = client(crud_operation_prompt)
+    
+    panda_code_prompt = get_panda_code(last_msg,datetime.today,crud_operation)
+    
+    panda_code = client(panda_code_prompt)
+
+    print("BEFORE EXEC")
+    print(panda_code)
+    exec(panda_code)
+    print(tareas_filtradas)
+    try:
+        print("IN TRY")
+        filtered_tasks = tareas_filtradas
+        print("STILL IN TRY")
+
+        response = filtered_tasks
+    except Exception:
+        response = "Hello world"
+    print("AFTER EXEC")
+    
 
     # Simulate response time
     for word in response.split():
         yield word + " "
-        time.sleep(0.05)
+        t.sleep(0.05)
 
 
 st.title("Simple Gemini chat")
