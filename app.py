@@ -1,41 +1,44 @@
 import streamlit as st
-import random
 import time as t
 from src.gemini import Gemini
 from src.prompts import *
 from datetime import *
-import pandas as pd
-import os
+from src.data_access import Get, Post, Remove
 client = Gemini()
 
 # Streamed response emulator
 def response_generator(last_msg):
     #lo que va a cambiar aqui realmente es last_msg que va a tener todo el prompt
+    print("RESPONSE GENERATION STARTED")
 
-    print("KJKJKJLJK EXEC")
-    
+
+    # Define operation type {GET, REMOVE, POST}
     crud_operation_prompt = define_CRUD(last_msg)
-    
     crud_operation = client(crud_operation_prompt)
-    
-    panda_code_prompt = get_panda_code(last_msg,datetime.today,crud_operation)
-    
-    panda_code = client(panda_code_prompt)
+    print(f"crud_operation = {crud_operation}")
 
-    print("BEFORE EXEC")
-    print(panda_code)
-    exec(panda_code)
-    print(tareas_filtradas)
-    try:
-        print("IN TRY")
-        filtered_tasks = tareas_filtradas
-        print("STILL IN TRY")
 
-        response = filtered_tasks
-    except Exception:
-        response = "Hello world"
-    print("AFTER EXEC")
-    
+    # Swith case for operation type
+    db_response = None
+    if crud_operation == 'GET':
+        db_response = Get(last_msg)
+    elif crud_operation == 'POST':
+        pass
+    elif crud_operation == 'REMOVE':
+        pass
+
+
+    print(f"Uninterpreted response: {db_response}")
+
+
+    # Interpret dataframe
+    interpretation_prompt = interpret_results(last_msg, db_response)
+    response = client(interpretation_prompt)
+
+
+    print(f"Interpreted response: {response}")
+    print("RESPONSE GENERATION ENDED")
+
 
     # Simulate response time
     for word in response.split():
