@@ -59,18 +59,24 @@ from datetime import datetime
 # print(t)
 
 
-x = """
-def filtrar_tareas(fecha):
-    df = pd.read_csv('tasks.csv')
-    df['Fecha'] = pd.to_datetime(df['Fecha'])
-    fecha = datetime.strptime(fecha, '%Y-%m-%d')
-    tareas_filtradas = df[df['Fecha'] == fecha]
-    return tareas_filtradas
+# x = """
+# def filtrar_tareas(fecha):
+#     df = pd.read_csv('tasks.csv')
+#     df['Fecha'] = pd.to_datetime(df['Fecha'])
+#     fecha = datetime.strptime(fecha, '%Y-%m-%d')
+#     tareas_filtradas = df[df['Fecha'] == fecha]
+#     return tareas_filtradas
 
-fecha = '2024-07-13'
-tareas_filtradas = filtrar_tareas(fecha)
-"""
-exec(x)
+# fecha = '2024-07-13'
+# tareas_filtradas = filtrar_tareas(fecha)
+# """
+# exec(x)
 
-t = tareas_filtradas
-print(tareas_filtradas)
+# t = tareas_filtradas
+# print(tareas_filtradas)
+# today = datetime.today().strftime('%Y-%m-%d')
+# print(f'HOY ES {today}')
+df = pd.read_csv('tasks.csv')
+
+df = df[df['Date'] != '2024-07-19']
+print(df)

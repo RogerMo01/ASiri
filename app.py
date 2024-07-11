@@ -25,7 +25,7 @@ def response_generator(last_msg):
     elif crud_operation == 'POST':
         pass
     elif crud_operation == 'REMOVE':
-        pass
+        db_response = Remove(last_msg)
 
 
     print(f"Uninterpreted response: {db_response}")

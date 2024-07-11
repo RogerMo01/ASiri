@@ -27,6 +27,17 @@ def Post(question: str):
     pass
 
 def Remove(question: str):
-    pass
+    query_prompt = remove_query(question)
+    code = llm(info_prompt + query_prompt)
 
+    code = format_python_code(code)
+    print(f"THE CODE IS {code}")
+    try:
+        df = eval(code)
+        df.to_csv('tasks.csv', index=False)
+        response = "The task was removed"
+    except:
+        response = "I couldn't do what you asked me to do."
+
+    return response
 

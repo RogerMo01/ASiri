@@ -30,14 +30,40 @@ You have to response with panda code, as a single python expresion,
 it must be a single python expresion
 
 Examples:
-1) quetion: Find the maximum value of a column
+1) question: Find the maximum value of a column
    response: `df['column_name'].max()`
 
-2) quetion: Count the different values on some column
+2) question: Count the different values on some column
    response: `df.groupby('column_name').count()`
 
-3) quetion: What tasks do I have for today
+3) question: What tasks do I have for today
    response: `df[df['Date'] == {today}]`
+
+Now, the question is:
+{question}
+"""
+    return query
+
+def remove_query(question: str):
+    today = datetime.today().strftime('%Y-%m-%d')
+    query = f"""
+Today is {today}, this is usefull if you have to response using dates.
+
+You have to response with panda code, as a single python expresion, 
+it must be a single python expresion
+
+Examples:
+1) question: Delete the tasks scheduled for the "some_day", "some_day" is in Year-Month-Day format but in string form.
+   response: `df[df['Date'] !='some_day']`
+
+2) question: Remove the appointments from the agenda starting on "some_day", "some_day" is in Year-Month-Day format but in string form.
+   response: `df[df['Date'] >= 'some_day']`
+
+3) question: Delete today's tasks
+   response: `df[df['Date'] != {today}]`
+
+4) question: Delete "some_task"
+   response: `df[df['Task_Name'] != "some_task"]`
 
 Now, the question is:
 {question}
