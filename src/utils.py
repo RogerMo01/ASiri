@@ -10,3 +10,12 @@ class Conversation:
 
     def add_dialogue(self,dialoguer, text):
         self.dialogues.append((dialoguer, text))
+
+
+def format_python_code(code: str):
+    """Remove python annotation whit (```)"""
+    if code.startswith("```python"):
+        code = code[9:]
+    if code.endswith("```"):
+        code = code[:len(code)-4]
+    return code
