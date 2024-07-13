@@ -11,32 +11,42 @@ def response_generator(last_msg):
     #lo que va a cambiar aqui realmente es last_msg que va a tener todo el prompt
     print("RESPONSE GENERATION STARTED")
 
+    # 🗄 Use database
+    if client(use_db(last_msg)) == 'DB':
 
-    # Define operation type {GET, REMOVE, POST}
-    crud_operation_prompt = define_CRUD(last_msg)
-    crud_operation = client(crud_operation_prompt)
-    print(f"crud_operation = {crud_operation}")
-
-
-    # Swith case for operation type
-    db_response = None
-    if crud_operation == 'GET':
-        db_response = Get(last_msg)
-    elif crud_operation == 'POST':
-        pass
-    elif crud_operation == 'REMOVE':
-        db_response = Remove(last_msg)
+        # Define operation type {GET, REMOVE, POST}
+        crud_operation_prompt = define_CRUD(last_msg)
+        crud_operation = client(crud_operation_prompt)
+        print(f"crud_operation = {crud_operation}")
 
 
-    print(f"Uninterpreted response: {db_response}")
+        # Swith case for operation type
+        db_response = None
+        if crud_operation == 'GET':
+            db_response = Get(last_msg)
+        elif crud_operation == 'POST':
+            pass
+        elif crud_operation == 'REMOVE':
+            db_response = Remove(last_msg)
 
 
-    # Interpret dataframe
-    interpretation_prompt = interpret_results(last_msg, db_response)
-    response = client(interpretation_prompt)
+        print(f"Uninterpreted response: {db_response}")
 
 
-    print(f"Interpreted response: {response}")
+        # Interpret dataframe
+        interpretation_prompt = interpret_results(last_msg, db_response)
+        response = client(interpretation_prompt)
+        print(f"Interpreted response: {response}")
+
+    # 🦦 Don't use database
+    else:
+        reponse_prompt = no_db_response(last_msg)
+        response = client(reponse_prompt)
+        print(f"Response: {response}")
+
+
+
+
     print("RESPONSE GENERATION ENDED")
 
 
