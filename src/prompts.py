@@ -1,6 +1,6 @@
 from datetime import *
 from pandas import DataFrame
-
+from utils import Conversation
 
 def define_CRUD(text: str) -> str:
     prompt = f"""
@@ -94,6 +94,70 @@ Current time is: {time}
 Now, the user's request is: {query}
     """
     return prompt
+
+
+def talk(query: str):
+    prompt = f"""
+    You are a personal assistant named Asiri. The person you are assisting will give you a task they want you to schedule. This is the task: {query}
+
+    You must determine if the task the user wants to save is an atomic task. You will do this by asking the user something, either a not-so-basic requirement but important for that task.
+
+    Here are some examples:
+
+    Example 1:
+    Request: Schedule going to a friend's wedding on Saturday
+    Response: Do you have a suit?
+
+    Example 2:
+    Request: Save business trip on Friday
+    Response: Have you booked a ticket?
+
+    Example 3:
+    Request: Save a date with my partner on the 14th
+    Response: 'None'
+
+    Keep in mind that not all tasks require a question. Some can be atomic and simply not require anything else. In such a case, respond with: 'None' in string format.
+
+"""
+    return prompt
+
+def split_task(task: str, conversation:Conversation):
+    today = datetime.today().strftime('%Y-%m-%d')
+    prompt = f"""
+    You are a personal assistant named Asiri. The person you are assisting wants to schedule the following task: {task}. Additionally, you have the following dialogue with them that may provide more context on what they might need: {conversation}. It is known that today's date is: {today}.
+
+    Now, using all the context, you must take the given task and return, based on the user's needs, a list of possible tasks they need to complete. These tasks should not be basic; they should involve additional work, such as going somewhere or doing something that requires effort. The response should be in the following format:
+    Response: ["Task1 with date", "Task2 with date"]
+
+    Examples:
+    Example 1:
+    Request: Schedule my friend's wedding for next Saturday.
+    Conversation:
+        Asiri says: Do you have a formal suit?
+        Person says: No
+        Asiri says: Then you need to buy one
+    Response: ["Buy a suit on Friday", "Go to my friend's wedding on Saturday"]
+
+    Example 2:
+    Request: Schedule an overseas trip on July 15th
+    Conversation:
+        Asiri says: Did you buy the ticket?
+        Person says: No
+        Asiri says: Then I will schedule it
+    Response: ["Buy a plane ticket today", "Overseas trip on July 15th"]
+
+    Example 3:
+    Request: Schedule an overseas trip on July 15th
+    Conversation:
+        Asiri says: Did you buy the ticket?
+        Person says: Yes
+        Asiri says: Okay
+    Response: ["Overseas trip on July 15th"]
+
+"""
+    return prompt
+
+
 
 # def get_panda_code(text: str, date: datetime, type: str) -> str:
 #     prompt = """ 
