@@ -1,6 +1,6 @@
 from datetime import *
 from pandas import DataFrame
-from utils import Conversation
+from src.utils import Conversation
 
 def define_CRUD(text: str) -> str:
     prompt = f"""
@@ -57,20 +57,20 @@ or the query can be satisfied just using information, that you can provide as a 
 Today is: {today}
 Current time is: {time}
 
-If query needs tasks database access, your response must be: `DB`
-If query can be answered with LLM, your response must be: `NO_DB`
+If query needs tasks database access, your response must be: DB
+If query can be answered with LLM, your response must be: NO_DB
 
 Examples:
 1) User query: Can you tell me what time is it?
-Your response: `NO_DB`
+Your response: NO_DB
 2) User query: Do I have any plans for today?
-Your response: `DB`
-3) User query: Ho is Cris Martin?
-Your response: `NO_DB`
+Your response: DB
+3) User query: Who is Cris Martin?
+Your response: NO_DB
 4) User query: Add Go to a meeting this sunday
-Your response: `DB`
+Your response: DB
 5) User query: Clear all my plans this week
-Your response: `DB`
+Your response: DB
 
 Now this is the User Query: {question}
     """
@@ -114,9 +114,10 @@ def talk(query: str):
 
     Example 3:
     Request: Save a date with my partner on the 14th
-    Response: 'None'
+    Response: None
 
-    Keep in mind that not all tasks require a question. Some can be atomic and simply not require anything else. In such a case, respond with: 'None' in string format.
+    You have an only chance to make a question, so take sure to ask the most important thing for the task.
+    Keep in mind that not all tasks require a question. Some can be atomic and simply not require anything else. In such a case, respond with: None in string format.
 
 """
     return prompt
@@ -131,7 +132,7 @@ def split_task(task: str, conversation:Conversation):
 
     Examples:
     Example 1:
-    Request: Schedule my friend's wedding for next Saturday.
+    Task: Schedule my friend's wedding for next Saturday.
     Conversation:
         Asiri says: Do you have a formal suit?
         Person says: No
@@ -139,7 +140,7 @@ def split_task(task: str, conversation:Conversation):
     Response: ["Buy a suit on Friday", "Go to my friend's wedding on Saturday"]
 
     Example 2:
-    Request: Schedule an overseas trip on July 15th
+    Task: Schedule an overseas trip on July 15th
     Conversation:
         Asiri says: Did you buy the ticket?
         Person says: No
@@ -147,13 +148,14 @@ def split_task(task: str, conversation:Conversation):
     Response: ["Buy a plane ticket today", "Overseas trip on July 15th"]
 
     Example 3:
-    Request: Schedule an overseas trip on July 15th
+    Task: Schedule an overseas trip on July 15th
     Conversation:
         Asiri says: Did you buy the ticket?
         Person says: Yes
         Asiri says: Okay
     Response: ["Overseas trip on July 15th"]
 
+    Don't split the task into more than two taks, and a task can't be anything that has to do with answering a question to you.
 """
     return prompt
 
