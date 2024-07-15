@@ -23,6 +23,7 @@ class Conversation:
     def add_dialogue(self, dialoguer, text):
         with open('talks.txt', 'a') as archivo:
             archivo.write(f'{dialoguer} says: {text} \n')
+        self.dialogues.append((dialoguer, text))
 
     def load_dialogues(self):
         with open('talks.txt', 'r') as file:
@@ -35,10 +36,16 @@ class Conversation:
     def clean_dialogues(self):
         with open('talks.txt', 'w') as file:
             file.write('')
+        self.dialogues = []
 
     def is_none(self):
         self.load_dialogues()
         return len(self.dialogues) == 0
+    
+    def get_first(self):
+        if len(self.dialogues)!=0:
+            return self.dialogues[0]
+        return None
 
 
 def format_python_code(code: str):
@@ -57,3 +64,9 @@ def format_python_code(code: str):
 
 # print(c)
 # print(datetime.now().time())
+
+split_response = '[Buy a suit on Friday, Go to a friend\'s wedding on Saturday]'
+start = split_response.index('[')
+end = split_response.index(']')
+response_array = split_response[start+1:end].split(',')
+print(response_array)

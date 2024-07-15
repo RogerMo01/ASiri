@@ -109,15 +109,20 @@ def talk(query: str):
     Response: Do you have a suit?
 
     Example 2:
-    Request: Save business trip on Friday
-    Response: Have you booked a ticket?
+    Request: Save request passport renewal on Monday
+    Response: Do you have passport photos?
 
     Example 3:
+    Request: Add business trip to New York on October 15
+    Response: Have you booked a hotel in New York?
+
+    Example 4:
     Request: Save a date with my partner on the 14th
     Response: None
 
     You have an only chance to make a question, so take sure to ask the most important thing for the task.
     Keep in mind that not all tasks require a question. Some can be atomic and simply not require anything else. In such a case, respond with: None in string format.
+    Don't make questions about time, just questions that implies do some special task (action no basic) for the person.
 
 """
     return prompt
@@ -125,37 +130,39 @@ def talk(query: str):
 def split_task(task: str, conversation:Conversation):
     today = datetime.today().strftime('%Y-%m-%d')
     prompt = f"""
-    You are a personal assistant named Asiri. The person you are assisting wants to schedule the following task: {task}. Additionally, you have the following dialogue with them that may provide more context on what they might need: {conversation}. It is known that today's date is: {today}.
+    You are a personal assistant named Asiri. The person you are assisting wants to schedule the following task: {task}. Additionally, you have the following dialogue with them that may provide more context on what they might need: \n
+    {conversation}. 
+    It is known that today's date is: {today}.
 
-    Now, using all the context, you must take the given task and return, based on the user's needs, a list of possible tasks they need to complete. These tasks should not be basic; they should involve additional work, such as going somewhere or doing something that requires effort. The response should be in the following format:
-    Response: ["Task1 with date", "Task2 with date"]
+    Now, using all the context, you must take the given task and return, based on the user's needs according to the conversation, a list of possible tasks they need to complete. These tasks should not be basic; they should involve additional work, such as going somewhere or doing something that requires effort. The response should be in the following format:
+    Response: [Task1_with_date, Task2_with_date"]
 
-    Examples:
     Example 1:
-    Task: Schedule my friend's wedding for next Saturday.
+    Task: Schedule going to a friend's wedding on Saturday
     Conversation:
-        Asiri says: Do you have a formal suit?
+        Asiri says: Do you have a suit?
         Person says: No
         Asiri says: Then you need to buy one
-    Response: ["Buy a suit on Friday", "Go to my friend's wedding on Saturday"]
+    Response: [Buy a suit on Friday, Go to a friend's wedding on Saturday]
 
     Example 2:
-    Task: Schedule an overseas trip on July 15th
+    Task: Save request passport renewal on Monday
     Conversation:
-        Asiri says: Did you buy the ticket?
+        Asiri says: Do you have passport photos?
         Person says: No
-        Asiri says: Then I will schedule it
-    Response: ["Buy a plane ticket today", "Overseas trip on July 15th"]
-
+        Asiri says: Then you need to take new photos
+    Response: [Take passport photos on Sunday, Request passport renewal on Monday]
+    
     Example 3:
-    Task: Schedule an overseas trip on July 15th
+    Task: Add business trip to New York on October 15
     Conversation:
-        Asiri says: Did you buy the ticket?
-        Person says: Yes
-        Asiri says: Okay
-    Response: ["Overseas trip on July 15th"]
+        Asiri says: Have you booked a hotel in New York?
+        Person says: No
+        Asiri says: Then you need to book one
+    Response: [Book a hotel in New York today, Business trip to New York on October 15]
 
     Don't split the task into more than two taks, and a task can't be anything that has to do with answering a question to you.
+    It's important that the tasks are related to the main task and are related to the conversation.
 """
     return prompt
 

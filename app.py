@@ -6,7 +6,8 @@ from datetime import *
 from src.data_access import Get, Post, Remove
 from src.utils import Conversation
 client = Gemini()
-
+# ARREGLAR EL PROMPT DE SPLIT
+# HACER QUE HABLEN MAS
 # Streamed response emulator
 def response_generator(last_msg):
     #lo que va a cambiar aqui realmente es last_msg que va a tener todo el prompt
@@ -32,14 +33,16 @@ def response_generator(last_msg):
         if crud_operation == 'GET':
             db_response = Get(last_msg)
         elif crud_operation == 'POST':
+             # add the main task to add
+             current_conversation.add_dialogue("User",last_msg)
              prompt_talk = talk(last_msg)
              talk_result = client(prompt_talk)
              print(f'TALK = {talk_result}')
-             if talk_result == 'None':
-                 db_response = Post(last_msg)   # pass Conversation
-                 current_conversation.clean_dialogues()
+             if talk_result == 'None':    # the task is atomic
+                 db_response = Post(last_msg)   # add the task to db
+                 current_conversation.clean_dialogues()   # clean the conversation
              else:
-                 current_conversation.add_dialogue("Asiri", talk_result)
+                 current_conversation.add_dialogue("Asiri", talk_result)    
                  db_response = talk_result   # it's not db response really
                  is_talk = True
 
@@ -63,6 +66,18 @@ def response_generator(last_msg):
         split_prompt = split_task(last_msg,current_conversation)
         split_response = client(split_prompt)
         print(f"Split response: {split_response}")
+        start = split_response.index('[')
+        end = split_response.index(']')
+        response_array = split_response[start+1:end].split(',')
+        
+        print(f"Response array: {response_array}")
+        # if len(response_array) != 0:   # if there are tasks to add
+        #   for res in response_array:
+        #       Post(res)
+        main_task = current_conversation.get_first()
+        Post(main_task)
+        current_conversation.clean_dialogues()
+
     # 🦦 Don't use database
     else:
         reponse_prompt = no_db_response(last_msg)
