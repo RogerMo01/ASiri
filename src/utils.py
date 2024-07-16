@@ -1,4 +1,5 @@
 from datetime import datetime
+
 class Task:
     def __init__(self, name, date) -> None:
         self.name = name
@@ -56,6 +57,25 @@ def format_python_code(code: str):
         code = code[:len(code)-4]
     return code
 
+class Crud_flag:
+
+    @staticmethod
+    def load_crud_flag() -> str:   # NON_OPER | GET | POST | REMOVE
+        with open('crud_flag.txt', 'r') as file:
+            crud_flag = file.readline()
+        return crud_flag
+    
+    @staticmethod
+    def clean_crud_flag():
+        with open('crud_flag.txt', 'w') as file:
+            file.write('NON_OPER')
+
+    @staticmethod
+    def edit_crud_flag(flag: str):
+        with open('crud_flag.txt', 'w') as file:
+            file.write('')
+            file.write(flag)
+
 
 # c = Conversation()
 # d = [("Pedro","Tienes traje?"),("Juan","Si, tengo"), ("Pedro", "Ah, vale")]
@@ -65,8 +85,18 @@ def format_python_code(code: str):
 # print(c)
 # print(datetime.now().time())
 
-split_response = '[Buy a suit on Friday, Go to a friend\'s wedding on Saturday]'
-start = split_response.index('[')
-end = split_response.index(']')
-response_array = split_response[start+1:end].split(',')
-print(response_array)
+# split_response = '[Buy a suit on Friday, Go to a friend\'s wedding on Saturday]'
+# start = split_response.index('[')
+# end = split_response.index(']')
+# response_array = split_response[start+1:end].split(',')
+# print(response_array)
+
+# x = load_crud_flag()
+# print(x)
+
+# edit_crud_flag('POST')
+
+# clean_crud_flag()
+# x = load_crud_flag()
+# print(x)
+

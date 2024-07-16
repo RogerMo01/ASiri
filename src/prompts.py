@@ -163,6 +163,7 @@ def split_task(task: str, conversation:Conversation):
 
     Don't split the task into more than two taks, and a task can't be anything that has to do with answering a question to you.
     It's important that the tasks are related to the main task and are related to the conversation.
+    The tasks in the array must be related to the main task and the need that arises from the conversation.
 """
     return prompt
 
