@@ -1,11 +1,12 @@
 import "./App.css";
-import Test from "./components/Test";
+import Chat from "./components/Chat";
+import NavMenu from "./components/NavMenu";
 
 function App() {
   return (
     <>
-      <h1 className="font-bold">Asiri</h1>
-      <Test />
+      <NavMenu/>
+      <Chat />
     </>
   );
 }
