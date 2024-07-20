@@ -1,6 +1,5 @@
 import { SetStateAction, useRef, useState } from "react";
 import { IoMdSend } from "react-icons/io";
-import "./ChatInput.css";
 
 interface Props{
     setter: React.Dispatch<SetStateAction<string>>
@@ -26,6 +25,9 @@ function ChatInput({setter}: Props) {
     console.log(`[*] User has sent: ${message}`)
     setter(message);
     setMessage("");
+    if (textArea.current) {
+      textArea.current.style.height = "auto";
+    }
   };
 
   return (
@@ -34,7 +36,7 @@ function ChatInput({setter}: Props) {
         ref={textArea}
         value={message}
         onChange={handleChange}
-        className="input-box resize-none h-auto mr-2 w-full rounded-xl bg-gray-100 font-normal text-base pr-4 py-2 pl-4 overflow-hidden"
+        className="input-box resize-none border border-gray-400 h-auto mr-2 w-full rounded-xl bg-gray-200 font-normal text-base pr-4 py-2 pl-4 overflow-hidden"
       ></textarea>
       <button onClick={() => handleSend()} className="h-12 pr-2 pl-2">
         <IoMdSend size={30}/>

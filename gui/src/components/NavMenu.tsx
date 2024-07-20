@@ -9,9 +9,9 @@ function NavMenu() {
           aria-label="Global"
         >
           <div className="flex lg:flex-1 justify-center">
-            <a href="#" className="-m-1.5 p-1.5 mr-auto">
+            <a href="#" className="-m-1.5 mr-auto">
               <span className="sr-only">ASiri</span>
-              <img className="h-20 w-auto" src="brand.png" alt="ASiri" />
+              <img className="h-14 w-auto" src="brand.png" alt="ASiri" />
             </a>
           </div>
         </nav>

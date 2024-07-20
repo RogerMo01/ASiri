@@ -4,7 +4,7 @@ import NavMenu from "./components/NavMenu";
 
 function App() {
   return (
-    <div className="">
+    <div className="flex-col">
       <NavMenu/>
       <Chat />
     </div>

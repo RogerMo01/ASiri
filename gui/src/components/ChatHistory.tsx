@@ -1,17 +1,24 @@
-import "./ChatHistory.css"
+import ChatAssistantMsg from "./ChatAssistantMsg";
+import ChatUserMsg from "./ChatUserMsg";
 
-interface Props{
-    userMsg: string,
-    assistantMsg: string
+interface Props {
+  userMsg: string;
+  assistantMsg: string;
 }
 
-function ChatHistory({userMsg, assistantMsg}: Props) {
 
+function ChatHistory({ userMsg, assistantMsg }: Props) {
+  const active = userMsg !== "" || assistantMsg !== "";
   return (
-    <div className="history-div min-h-10vh">
-        <h1>History</h1>
-        <p>{userMsg}</p>
-        <p>{assistantMsg}</p>
+    <div className="flex-grow">
+      {active && <div>
+        <ChatUserMsg msg={userMsg}/>
+        <ChatAssistantMsg msg={assistantMsg}/>
+      </div>}
+      {!active && <div>
+        {/* <img src="/brand.png" className="max-h-60"/> */}
+      </div>}
+
     </div>
   );
 }
