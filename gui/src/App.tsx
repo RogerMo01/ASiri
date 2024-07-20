@@ -4,10 +4,10 @@ import NavMenu from "./components/NavMenu";
 
 function App() {
   return (
-    <>
+    <div className="">
       <NavMenu/>
       <Chat />
-    </>
+    </div>
   );
 }
 
