@@ -30,12 +30,20 @@ function ChatInput({setter}: Props) {
     }
   };
 
+  const handleKeyPress = (event: { key: string; shiftKey: unknown; preventDefault: () => void; }) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      handleSend();
+    }
+  };
+
   return (
     <div className="mt-4 p-1 flex">
       <textarea
         ref={textArea}
         value={message}
         onChange={handleChange}
+        onKeyDown={handleKeyPress}
         className="input-box resize-none border border-gray-400 h-auto mr-2 w-full rounded-xl bg-gray-200 font-normal text-base pr-4 py-2 pl-4 overflow-hidden"
       ></textarea>
       <button onClick={() => handleSend()} className="h-12 pr-2 pl-2">
