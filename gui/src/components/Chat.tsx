@@ -9,15 +9,24 @@ function Chat() {
   const [lastResponse, setLastResponse] = useState("");
 
   useEffect(() => {
-    if (lastUserMessage !== ""){
+    const fetchResponse = async () => {
+      if (lastUserMessage !== "") {
 
-      // Pedir respuesta del asistente
-      setLastResponse(defaultResponse);
+        // Temporal displayed response
+        setLastResponse("");
 
-    }
-    else{
-      setLastResponse("");
-    }
+        // (DELETE) Simulate wait
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        
+        // Request assistant response
+        setLastResponse(defaultResponse);
+
+      } else {
+        setLastResponse("");
+      }
+    };
+
+    fetchResponse();
   }, [lastUserMessage]);
 
   return (
