@@ -2,7 +2,7 @@ import ChatInput from "./ChatInput";
 import ChatHistory from "./ChatHistory";
 import { useEffect, useState } from "react";
 
-const defaultResponse = "Hey there, I can help you with anything you want, you just give me a touch when yo need something from me, I am you assistant in every moment. Hey there, I can help you with anything you want, you just give me a touch when yo need something from me, I am you assistant in every moment";
+const defaultResponse = "Hey there, I can help you with anything you want, you just give me a touch when you need something from me, I am your assistant in every moment.";
 
 function Chat() {
   const [lastUserMessage, setLastUserMessage] = useState("");
