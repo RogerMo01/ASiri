@@ -21,6 +21,8 @@ function Chat() {
         // Request assistant response
         setLastResponse(defaultResponse);
 
+        console.log(`[*] Server response: ${defaultResponse}`)
+
       } else {
         setLastResponse("");
       }

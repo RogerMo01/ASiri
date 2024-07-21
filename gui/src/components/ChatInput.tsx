@@ -1,5 +1,6 @@
 import { SetStateAction, useRef, useState } from "react";
 import { IoMdSend } from "react-icons/io";
+import { FaMicrophone } from "react-icons/fa";
 
 interface Props{
     setter: React.Dispatch<SetStateAction<string>>
@@ -13,7 +14,6 @@ function ChatInput({setter}: Props) {
     target: { value: SetStateAction<string> };
   }) => {
     setMessage(event.target.value);
-    console.log(event.target.value);
 
     if (textArea.current) {
       textArea.current.style.height = "auto";
@@ -37,18 +37,28 @@ function ChatInput({setter}: Props) {
     }
   };
 
+  function handleMic(): void {
+    throw new Error("Function not implemented.");
+  }
+  
+
   return (
-    <div className="mt-4 p-1 flex">
+    <div className="mt-4 p-1 flex bg-gray-200 border border-gray-500 rounded-xl">
       <textarea
         ref={textArea}
         value={message}
         onChange={handleChange}
         onKeyDown={handleKeyPress}
-        className="input-box resize-none border border-gray-400 h-auto mr-2 w-full rounded-xl bg-gray-200 font-normal text-base pr-4 py-2 pl-4 overflow-hidden"
+        className="input-box resize-none mr-2 w-full rounded-xl bg-gray-200 font-normal text-base pr-4 py-2 pl-4 overflow-hidden"
       ></textarea>
-      <button onClick={() => handleSend()} className="h-12 pr-2 pl-2">
-        <IoMdSend size={30}/>
-      </button>
+      <div className="flex items-end">
+        <button onClick={() => handleMic()} className="h-16 w-auto mx-1 pr-2 pl-2">
+          <FaMicrophone size={25}/>
+        </button>
+        <button onClick={() => handleSend()} className="h-16 w-auto pr-2 pl-2">
+          <IoMdSend size={25}/>
+        </button>
+      </div>
     </div>
   );
 }
