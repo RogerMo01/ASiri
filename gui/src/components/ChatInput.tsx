@@ -1,12 +1,13 @@
 import { SetStateAction, useRef, useState } from "react";
 import { IoMdSend } from "react-icons/io";
-import { FaMicrophone } from "react-icons/fa";
+import RecordButton from "./RecordButton";
 
 interface Props{
-    setter: React.Dispatch<SetStateAction<string>>
+  setter: React.Dispatch<SetStateAction<string>>,
+  audioURLSetter: React.Dispatch<SetStateAction<string>>
 }
 
-function ChatInput({setter}: Props) {
+function ChatInput({setter, audioURLSetter}: Props) {
   const textArea = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState("");
 
@@ -36,10 +37,6 @@ function ChatInput({setter}: Props) {
       handleSend();
     }
   };
-
-  function handleMic(): void {
-    throw new Error("Function not implemented.");
-  }
   
 
   return (
@@ -52,9 +49,7 @@ function ChatInput({setter}: Props) {
         className="input-box resize-none mr-2 w-full rounded-xl bg-gray-200 font-normal text-base pr-4 py-2 pl-4 overflow-hidden"
       ></textarea>
       <div className="flex items-end">
-        <button onClick={() => handleMic()} className="h-16 w-auto mx-1 pr-2 pl-2">
-          <FaMicrophone size={25}/>
-        </button>
+        <RecordButton style="h-16 w-auto mx-1 pr-2 pl-2" audioURLSetter={audioURLSetter} />
         <button onClick={() => handleSend()} className="h-16 w-auto pr-2 pl-2">
           <IoMdSend size={25}/>
         </button>

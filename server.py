@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -14,6 +14,19 @@ def names():
         }
     )
 
+@app.route('/audio', methods=['POST'])
+def upload_file():
+    if 'audio' not in request.files:
+        return 'No file part', 400
+    
+    file = request.files['audio']
+
+    if file.filename == '':
+        return 'No selected file', 400
+    
+    # Save file
+    file.save(f'./audios/{file.filename}')
+    return 'File uploaded successfully', 200
 ###################################################################
 
 

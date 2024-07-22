@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosHeaders } from "axios";
 
 const serverIP = import.meta.env.VITE_SERVER_IP;
 const serverPORT = import.meta.env.VITE_SERVER_PORT;
@@ -14,3 +14,7 @@ export function request(setter: React.Dispatch<React.SetStateAction<never[]>>) {
     });
 }
 
+export function repost(endpoint: string, data: unknown, headers: AxiosHeaders){
+    const serverUrl = `http://${serverIP}:${serverPORT}${endpoint}`;
+    axios.post(serverUrl, data, {headers: headers});
+}

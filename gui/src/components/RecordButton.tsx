@@ -1,0 +1,55 @@
+import { SetStateAction, useRef, useState } from "react";
+import { FaMicrophone } from "react-icons/fa";
+
+interface Props {
+  style: string;
+  audioURLSetter: React.Dispatch<SetStateAction<string>>
+}
+
+function RecordButton({ style, audioURLSetter }: Props) {
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorder = useRef<MediaRecorder | null>(null);
+  const audioChunks = useRef<Blob[]>([]);
+
+  const startRecording = async () => {
+    try{
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder.current = new MediaRecorder(stream);
+    
+        mediaRecorder.current.ondataavailable = (event) => {
+          audioChunks.current.push(event.data);
+        };
+    
+        mediaRecorder.current.onstop = () => {
+          const blob = new Blob(audioChunks.current, { type: "audio/wav" });
+          const url = URL.createObjectURL(blob);
+          audioURLSetter(url);
+          audioChunks.current = [];
+        };
+    
+        mediaRecorder.current.start();
+        setIsRecording(true);
+    } catch(error){
+        console.error('Error accessing the microphone:', error);
+        alert('🎙 Cannot access to microphone because we are not using HTTPS protocol!');
+    }
+  };
+
+  const stopRecording = () => {
+    mediaRecorder.current?.stop();
+    setIsRecording(false);
+  };
+
+  return (
+    <>
+      <button
+        onClick={isRecording ? stopRecording : startRecording}
+        className={`${style} ${isRecording ? "bg-red-600" : ""}`}
+      >
+        <FaMicrophone size={25} />
+      </button>
+    </>
+  );
+}
+
+export default RecordButton;
