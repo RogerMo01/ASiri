@@ -50,7 +50,7 @@ function ChatInput({setter, audioURLSetter}: Props) {
       ></textarea>
       <div className="flex items-end">
         <RecordButton style="h-16 w-auto mx-1 pr-2 pl-2" audioURLSetter={audioURLSetter} />
-        <button onClick={() => handleSend()} className="h-16 w-auto pr-2 pl-2">
+        <button onClick={() => handleSend()} className="h-16 w-auto rounded-full pr-2 pl-2">
           <IoMdSend size={25}/>
         </button>
       </div>

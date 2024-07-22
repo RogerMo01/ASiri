@@ -1,5 +1,8 @@
 import { SetStateAction, useRef, useState } from "react";
 import { FaMicrophone } from "react-icons/fa";
+import { FaStopCircle } from "react-icons/fa";
+import Timer from "./Timer";
+import "./RecordButton.css"
 
 interface Props {
   style: string;
@@ -44,9 +47,14 @@ function RecordButton({ style, audioURLSetter }: Props) {
     <>
       <button
         onClick={isRecording ? stopRecording : startRecording}
-        className={`${style} ${isRecording ? "bg-red-600" : ""}`}
+        className={`transition-size rounded-full ${style} ${isRecording ? "bg-red-600 w-32" : "w-10"}`}
       >
-        <FaMicrophone size={25} />
+        <div className="flex">
+          {!isRecording && <FaMicrophone size={25} />}
+          {isRecording && <FaStopCircle size={25} />}
+          {isRecording && <Timer/>}
+        </div>
+
       </button>
     </>
   );

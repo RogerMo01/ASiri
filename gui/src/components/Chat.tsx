@@ -71,7 +71,6 @@ function Chat() {
   return (
     <div className="flex-col p-4 lg:mx-40 rounded-xl">
       <ChatHistory userMsg={lastUserMessage} assistantMsg={lastResponse}/>
-      <p>{audioURL}</p>
       <ChatInput setter={setLastUserMessage} audioURLSetter={setAudioURL}/>
     </div>
   );

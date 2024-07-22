@@ -1,0 +1,3 @@
+.transition-size {
+  transition: width 500ms ease-in-out, height 500ms ease-in-out;
+}
