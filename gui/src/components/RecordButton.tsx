@@ -47,14 +47,13 @@ function RecordButton({ style, audioURLSetter }: Props) {
     <>
       <button
         onClick={isRecording ? stopRecording : startRecording}
-        className={`transition-size rounded-full ${style} ${isRecording ? "bg-red-600 w-32" : "w-10"}`}
+        className={`transition-width rounded-full ${style} ${isRecording ? "bg-red-600 w-36" : "w-12"}`}
       >
-        <div className="flex">
+        <div className="flex justify-center">
           {!isRecording && <FaMicrophone size={25} />}
           {isRecording && <FaStopCircle size={25} />}
           {isRecording && <Timer/>}
         </div>
-
       </button>
     </>
   );
