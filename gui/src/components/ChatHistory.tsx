@@ -7,16 +7,19 @@ interface Props {
   thinking: boolean;
   showHome: boolean;
   lastWasAudio: boolean;
+  speaking: boolean;
+  speak: (text: string) => void;
+  cancel: () => void;
 }
 
 
-function ChatHistory({ userMsg, assistantMsg, thinking, showHome, lastWasAudio }: Props) {
+function ChatHistory({ userMsg, assistantMsg, thinking, showHome, lastWasAudio, speaking, speak, cancel }: Props) {
   return (
     <div className="flex-grow flex-col h-auto justify-center">
 
       {!showHome && <div>
         {!lastWasAudio && <ChatUserMsg msg={userMsg}/>}
-        <ChatAssistantMsg msg={assistantMsg} thinking={thinking} lastWasAudio={lastWasAudio}/>
+        <ChatAssistantMsg msg={assistantMsg} thinking={thinking} lastWasAudio={lastWasAudio} speaking={speaking} speak={speak} cancel={cancel}/>
       </div>}
 
       {showHome && <>

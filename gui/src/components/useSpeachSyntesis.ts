@@ -1,8 +1,26 @@
 // src/hooks/useSpeechSynthesis.ts
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const useSpeechSynthesis = () => {
   const [speaking, setSpeaking] = useState(false);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
+
+  useEffect(() => {
+    const loadVoices = () => {
+      const voices = window.speechSynthesis.getVoices();
+      setVoices(voices);
+      if (voices.length > 0) {
+        setSelectedVoice(voices[0]); // Default to the first voice
+      }
+
+      // Select 9 as default voice
+      try{setSelectedVoice(voices[9]);}catch(e){console.log(e)}
+    };
+
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
+  }, []);
 
   const speak = (text: string) => {
     if (!window.speechSynthesis) {
@@ -11,6 +29,10 @@ const useSpeechSynthesis = () => {
     }
 
     const utterance = new SpeechSynthesisUtterance(text);
+
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+    }
 
     utterance.onstart = () => setSpeaking(true);
     utterance.onend = () => setSpeaking(false);
@@ -26,7 +48,7 @@ const useSpeechSynthesis = () => {
     }
   };
 
-  return { speaking, speak, cancel };
+  return { speaking, speak, cancel, voices, selectedVoice, setSelectedVoice };
 };
 
 export default useSpeechSynthesis;

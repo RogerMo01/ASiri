@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import useSpeechSynthesis from "./useSpeachSyntesis";
-import { RiSpeakFill } from "react-icons/ri";
 import { HiSpeakerWave } from "react-icons/hi2";
 import { FaStopCircle } from "react-icons/fa";
 
@@ -8,9 +6,12 @@ interface Props {
   msg: string;
   thinking: boolean;
   lastWasAudio: boolean;
+  speaking: boolean;
+  speak: (text: string) => void;
+  cancel: () => void;
 }
 
-function ChatAssistantMsg({ msg, thinking, lastWasAudio }: Props) {
+function ChatAssistantMsg({ msg, thinking, lastWasAudio, speaking, speak, cancel }: Props) {
   const [displayedMessage, setDisplayedMessage] = useState("");
   const words: string[] = msg.split(" ");
 
@@ -33,10 +34,6 @@ function ChatAssistantMsg({ msg, thinking, lastWasAudio }: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [msg]);
 
-
-  // Speech to Text hook
-  const { speaking, speak, cancel } = useSpeechSynthesis();
-  
 
   // Read aloud when response changes
   useEffect(() => {

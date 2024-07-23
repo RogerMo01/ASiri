@@ -7,9 +7,12 @@ import { repost } from "./axios_aux";
 interface Props{
   showHome: boolean;
   setShowHome: React.Dispatch<SetStateAction<boolean>>;
+  speaking: boolean;
+  speak: (text: string) => void;
+  cancel: () => void;
 }
 
-function Chat({showHome, setShowHome}: Props) {
+function Chat({showHome, setShowHome, speaking, speak, cancel }: Props) {
   const [lastUserMessage, setLastUserMessage] = useState("");
   const [lastResponse, setLastResponse] = useState("");
   const [audioURL, setAudioURL] = useState("");
@@ -87,7 +90,7 @@ function Chat({showHome, setShowHome}: Props) {
 
   return (
     <div className="flex-col p-4 lg:mx-40 rounded-xl">
-      <ChatHistory userMsg={lastUserMessage} assistantMsg={lastResponse} thinking={thinking} showHome={showHome} lastWasAudio={lastWasAudio}/>
+      <ChatHistory userMsg={lastUserMessage} assistantMsg={lastResponse} thinking={thinking} showHome={showHome} lastWasAudio={lastWasAudio} speaking={speaking} speak={speak} cancel={cancel}/>
       <ChatInput setter={setLastUserMessage} audioURLSetter={setAudioURL} loading={thinking}/>
     </div>
   );

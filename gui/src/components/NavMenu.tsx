@@ -3,9 +3,18 @@ import "./NavMenu.css";
 
 interface Props{
   setShowHome: React.Dispatch<SetStateAction<boolean>>;
+  voices: SpeechSynthesisVoice[];
+  selectedVoice: SpeechSynthesisVoice | null;
+  setSelectedVoice: React.Dispatch<React.SetStateAction<SpeechSynthesisVoice | null>>;
 }
 
-function NavMenu({setShowHome}: Props) {
+function NavMenu({setShowHome, voices, selectedVoice, setSelectedVoice}: Props) {
+
+  const handleVoiceChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selected = voices.find(voice => voice.name === event.target.value);
+    setSelectedVoice(selected || null);
+  };
+
   return (
     <>
       <header className="bg-white mt-0 shadow-2xl">
@@ -18,6 +27,13 @@ function NavMenu({setShowHome}: Props) {
               <span className="sr-only">ASiri</span>
               <img className="h-14 w-auto" src="brand.png" alt="ASiri" />
             </a>
+            <select className="rounded-2xl border border-gray-300 bg-purple-500 font-semibold px-2 text-white" onChange={handleVoiceChange} value={selectedVoice?.name || ''}>
+              {voices.map(voice => (
+                <option className="bg-gray-200 text-black font-semibold rounded " key={voice.name} value={voice.name}>
+                  {voice.name} ({voice.lang})
+                </option>
+              ))}
+            </select>
           </div>
         </nav>
       </header>
