@@ -16,13 +16,15 @@ function Chat() {
   ////////////////////// Detect new user text //////////////////////////
   useEffect(() => {
     const fetchResponse = async () => {
-      // Temporal displayed response
-      setLastResponse("");
-
-      // (DELETE) Simulate wait
-      await new Promise(resolve => setTimeout(resolve, 3000));
       
+      const formData = new FormData();
+      formData.append('text', lastUserMessage);
+
       // Request assistant response
+      repost("/text", formData, new AxiosHeaders())
+
+      // 🚨🚨🚨🚨🚨🚨🚨🚨🚨 Handle server response 🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
+
       setLastResponse(defaultResponse);
 
       console.log(`[*] Server response: ${defaultResponse}`)
@@ -52,6 +54,10 @@ function Chat() {
 
         // Send audio to server
         repost("/audio", formData, new AxiosHeaders({ 'Content-Type': 'multipart/form-data' }))
+        
+        // 🚨🚨🚨🚨🚨🚨🚨🚨🚨 Handle server response 🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
+
+        setLastResponse(defaultResponse);
 
       } catch(error){
         console.error(error)

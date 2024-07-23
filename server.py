@@ -10,13 +10,14 @@ cors = CORS(app=app, origins='*')
 whisper_model = whisper.load_model("tiny")
 
 ########################### API's #################################
-@app.route("/api/names", methods=['GET'])
-def names():
-    return jsonify(
-        {
-            "names": ["Leif", "Harald", "Freydis"]
-        }
-    )
+@app.route("/text", methods=['POST'])
+def upload_text():
+    text = request.form.get('text', '')
+
+    print(f"[*] Text: {text}") # 🚨🚨🚨🚨🚨
+
+    return jsonify({"ok": "Success transcription"}), 200
+
 
 @app.route('/audio', methods=['POST'])
 def upload_file():
