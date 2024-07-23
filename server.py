@@ -1,9 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import os
+import uuid
+import whisper
 
 app = Flask(__name__)
 cors = CORS(app=app, origins='*')
 
+whisper_model = whisper.load_model("tiny")
 
 ########################### API's #################################
 @app.route("/api/names", methods=['GET'])
@@ -17,16 +21,25 @@ def names():
 @app.route('/audio', methods=['POST'])
 def upload_file():
     if 'audio' not in request.files:
-        return 'No file part', 400
+        return jsonify({"error": "No audio file provided"}), 400
     
-    file = request.files['audio']
+    audio_file = request.files['audio']
 
-    if file.filename == '':
-        return 'No selected file', 400
+    # Save the uploaded file temporarily
+    unique_id = uuid.uuid4().hex
+    temp_path = os.path.join("audios", f"temp_audio_{unique_id}.mp3")
+    audio_file.save(temp_path)
     
-    # Save file
-    file.save(f'./audios/{file.filename}')
-    return 'File uploaded successfully', 200
+    # Transcribe to text
+    result = whisper_model.transcribe(temp_path)
+    text = result["text"]
+
+    # Remove temporal audio file
+    os.remove(temp_path)
+    
+    print(f"[*] Text: {text}") # 🚨🚨🚨🚨🚨
+
+    return jsonify({"ok": "Success transcription"}), 200
 ###################################################################
 
 
