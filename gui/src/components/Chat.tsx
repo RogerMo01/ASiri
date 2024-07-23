@@ -1,41 +1,45 @@
 import ChatInput from "./ChatInput";
 import ChatHistory from "./ChatHistory";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { AxiosHeaders } from "axios";
 import { repost } from "./axios_aux";
 
-
-const defaultResponse = "Hey there, I can help you with anything you want, you just give me a touch when you need something from me, I am your assistant in every moment.";
-
-function Chat() {
+interface Props{
+  showHome: boolean;
+  setShowHome: React.Dispatch<SetStateAction<boolean>>;
+}
+function Chat({showHome, setShowHome}: Props) {
   const [lastUserMessage, setLastUserMessage] = useState("");
   const [lastResponse, setLastResponse] = useState("");
   const [audioURL, setAudioURL] = useState("");
+  const [thinking, setThinking] = useState(false);
+  const [lastWasAudio, setLastWasAudio] = useState(false);
 
 
   ////////////////////// Detect new user text //////////////////////////
   useEffect(() => {
     const fetchResponse = async () => {
-      
       const formData = new FormData();
       formData.append('text', lastUserMessage);
 
       // Request assistant response
-      repost("/text", formData, new AxiosHeaders())
+      const server_response = await repost("/text", formData, new AxiosHeaders())
 
-      // 🚨🚨🚨🚨🚨🚨🚨🚨🚨 Handle server response 🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
+      setLastResponse(server_response);
 
-      setLastResponse(defaultResponse);
-
-      console.log(`[*] Server response: ${defaultResponse}`)
+      console.log(`[*] Server response: ${server_response}`)
+      setThinking(false);
     };
 
-    // Actions
+    // Actions when request (Audio)
     if (lastUserMessage !== "") {
       fetchResponse();
-    } else{
       setLastResponse("");
+      setThinking(true);
+      setShowHome(false);
+      setLastWasAudio(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastUserMessage]);
   ///////////////////////////////////////////////////////////////////////
 
@@ -53,20 +57,25 @@ function Chat() {
         formData.append('audio', audioBlob, 'audiofile.mp3'); // Ajusta el nombre del archivo según sea necesario
 
         // Send audio to server
-        repost("/audio", formData, new AxiosHeaders({ 'Content-Type': 'multipart/form-data' }))
+        const server_response = await repost("/audio", formData, new AxiosHeaders({ 'Content-Type': 'multipart/form-data' }))
         
-        // 🚨🚨🚨🚨🚨🚨🚨🚨🚨 Handle server response 🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
+        setLastResponse(server_response);
 
-        setLastResponse(defaultResponse);
+        console.log(`[*] Server response: ${server_response}`)
+        setThinking(false);
 
       } catch(error){
         console.error(error)
       }
     };
 
-    // Actions
+    // Actions when request (Audio)
     if (audioURL !== ""){
       fetchResponse();
+      setLastResponse("");
+      setThinking(true);
+      setShowHome(false);
+      setLastWasAudio(true);
     }
   }, [audioURL]);
   ///////////////////////////////////////////////////////////////////////
@@ -76,7 +85,7 @@ function Chat() {
 
   return (
     <div className="flex-col p-4 lg:mx-40 rounded-xl">
-      <ChatHistory userMsg={lastUserMessage} assistantMsg={lastResponse}/>
+      <ChatHistory userMsg={lastUserMessage} assistantMsg={lastResponse} thinking={thinking} showHome={showHome} lastWasAudio={lastWasAudio}/>
       <ChatInput setter={setLastUserMessage} audioURLSetter={setAudioURL}/>
     </div>
   );

@@ -1,3 +1,4 @@
+import time
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
@@ -7,16 +8,17 @@ import whisper
 app = Flask(__name__)
 cors = CORS(app=app, origins='*')
 
-whisper_model = whisper.load_model("tiny")
+# whisper_model = whisper.load_model("tiny")
+whisper_model = whisper.load_model("base")
 
 ########################### API's #################################
 @app.route("/text", methods=['POST'])
 def upload_text():
     text = request.form.get('text', '')
 
-    print(f"[*] Text: {text}") # 🚨🚨🚨🚨🚨
+    response = handle_user_request(text)
 
-    return jsonify({"ok": "Success transcription"}), 200
+    return jsonify({"response": response}), 200
 
 
 @app.route('/audio', methods=['POST'])
@@ -38,10 +40,19 @@ def upload_file():
     # Remove temporal audio file
     os.remove(temp_path)
     
-    print(f"[*] Text: {text}") # 🚨🚨🚨🚨🚨
+    response = handle_user_request(text);
 
-    return jsonify({"ok": "Success transcription"}), 200
+    return jsonify({"response": response}), 200
 ###################################################################
+
+
+def handle_user_request(request: str):
+    '''
+    This function is for processing user request and return the assistant response
+    '''
+    print(f"[*] User request: {request}")
+    return f"Hey user, this is response for testing purpose, and must contain your same request:\n {request}"
+
 
 
 if __name__ == "__main__":

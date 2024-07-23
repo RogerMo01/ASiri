@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 
 interface Props {
   msg: string;
+  thinking: boolean;
 }
 
-function ChatAssistantMsg({ msg }: Props) {
+function ChatAssistantMsg({ msg, thinking }: Props) {
   const [displayedMessage, setDisplayedMessage] = useState("");
   const words: string[] = msg.split(" ");
 
@@ -29,14 +30,14 @@ function ChatAssistantMsg({ msg }: Props) {
 
   return (
     <div className="flex m-2 my-6">
-      {msg !== "" && <div className="max-w-12 min-w-12">
+      {!thinking && <div className="max-w-12 min-w-12">
         <img src="/logo.png" alt="Logo"/>
       </div>}
-      {msg === "" && <div className="max-w-12 min-w-12">
+      {thinking && <div className="max-w-12 min-w-12">
         <img src="/logo_animated.gif" alt="Animated Logo"/>
       </div>}
       <div className="bg-gray-200 flex-grow border border-gray-300 mx-2 rounded-2xl p-2 text-left">
-        {displayedMessage}
+        {thinking ? "" : displayedMessage}
       </div>
     </div>
   );

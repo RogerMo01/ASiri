@@ -1,4 +1,4 @@
-import axios, { AxiosHeaders } from "axios";
+import axios, { AxiosHeaders, AxiosResponse } from "axios";
 
 const serverIP = import.meta.env.VITE_SERVER_IP;
 const serverPORT = import.meta.env.VITE_SERVER_PORT;
@@ -14,10 +14,13 @@ export function request(endpoint: string, setter: React.Dispatch<React.SetStateA
     });
 }
 
-export function repost(endpoint: string, data: unknown, headers: AxiosHeaders){
+export async function repost(endpoint: string, data: unknown, headers: AxiosHeaders){
     const serverUrl = `http://${serverIP}:${serverPORT}${endpoint}`;
-    axios.post(serverUrl, data, {headers: headers})
-    .catch((error) => {
-        console.error(error);
-    });
+    try{
+        const response: AxiosResponse = await axios.post(serverUrl, data, {headers: headers});
+        return response.data.response
+    } catch(error) {
+        console.error("Error in POST: ", error);
+    }
+    return null;
 }

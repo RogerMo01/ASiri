@@ -1,6 +1,11 @@
+import { SetStateAction } from "react";
 import "./NavMenu.css";
 
-function NavMenu() {
+interface Props{
+  setShowHome: React.Dispatch<SetStateAction<boolean>>;
+}
+
+function NavMenu({setShowHome}: Props) {
   return (
     <>
       <header className="bg-white mt-0 shadow-2xl">
@@ -9,7 +14,7 @@ function NavMenu() {
           aria-label="Global"
         >
           <div className="flex lg:flex-1 justify-center">
-            <a href="#" className="-m-1.5 mr-auto">
+            <a onClick={() => setShowHome(true)} className="-m-1.5 mr-auto cursor-pointer">
               <span className="sr-only">ASiri</span>
               <img className="h-14 w-auto" src="brand.png" alt="ASiri" />
             </a>
