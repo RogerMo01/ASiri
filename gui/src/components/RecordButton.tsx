@@ -6,10 +6,11 @@ import "./RecordButton.css"
 
 interface Props {
   style: string;
-  audioURLSetter: React.Dispatch<SetStateAction<string>>
+  audioURLSetter: React.Dispatch<SetStateAction<string>>;
+  loading: boolean;
 }
 
-function RecordButton({ style, audioURLSetter }: Props) {
+function RecordButton({ style, audioURLSetter, loading }: Props) {
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorder = useRef<MediaRecorder | null>(null);
   const audioChunks = useRef<Blob[]>([]);
@@ -47,6 +48,7 @@ function RecordButton({ style, audioURLSetter }: Props) {
     <>
       <button
         onClick={isRecording ? stopRecording : startRecording}
+        disabled={loading}
         className={`transition-width rounded-full ${style} ${isRecording ? "bg-red-600 w-32" : "w-10"}`}
       >
         <div className="flex justify-center">
