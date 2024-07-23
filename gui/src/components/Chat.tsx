@@ -8,6 +8,7 @@ interface Props{
   showHome: boolean;
   setShowHome: React.Dispatch<SetStateAction<boolean>>;
 }
+
 function Chat({showHome, setShowHome}: Props) {
   const [lastUserMessage, setLastUserMessage] = useState("");
   const [lastResponse, setLastResponse] = useState("");
@@ -77,6 +78,7 @@ function Chat({showHome, setShowHome}: Props) {
       setShowHome(false);
       setLastWasAudio(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [audioURL]);
   ///////////////////////////////////////////////////////////////////////
 
@@ -86,7 +88,7 @@ function Chat({showHome, setShowHome}: Props) {
   return (
     <div className="flex-col p-4 lg:mx-40 rounded-xl">
       <ChatHistory userMsg={lastUserMessage} assistantMsg={lastResponse} thinking={thinking} showHome={showHome} lastWasAudio={lastWasAudio}/>
-      <ChatInput setter={setLastUserMessage} audioURLSetter={setAudioURL}/>
+      <ChatInput setter={setLastUserMessage} audioURLSetter={setAudioURL} loading={thinking}/>
     </div>
   );
 }
