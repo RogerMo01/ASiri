@@ -16,7 +16,7 @@ function ChatHistory({ userMsg, assistantMsg, thinking, showHome, lastWasAudio }
 
       {!showHome && <div>
         {!lastWasAudio && <ChatUserMsg msg={userMsg}/>}
-        <ChatAssistantMsg msg={assistantMsg} thinking={thinking}/>
+        <ChatAssistantMsg msg={assistantMsg} thinking={thinking} lastWasAudio={lastWasAudio}/>
       </div>}
 
       {showHome && <>
