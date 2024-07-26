@@ -1,6 +1,6 @@
 from datetime import *
 from pandas import DataFrame
-
+from src.utils import Conversation
 
 def define_CRUD(text: str) -> str:
     prompt = f"""
@@ -57,20 +57,20 @@ or the query can be satisfied just using information, that you can provide as a 
 Today is: {today}
 Current time is: {time}
 
-If query needs tasks database access, your response must be: `DB`
-If query can be answered with LLM, your response must be: `NO_DB`
+If query needs tasks database access, your response must be: DB
+If query can be answered with LLM, your response must be: NO_DB
 
 Examples:
 1) User query: Can you tell me what time is it?
-Your response: `NO_DB`
+Your response: NO_DB
 2) User query: Do I have any plans for today?
-Your response: `DB`
-3) User query: Ho is Cris Martin?
-Your response: `NO_DB`
+Your response: DB
+3) User query: Who is Cris Martin?
+Your response: NO_DB
 4) User query: Add Go to a meeting this sunday
-Your response: `DB`
+Your response: DB
 5) User query: Clear all my plans this week
-Your response: `DB`
+Your response: DB
 
 Now this is the User Query: {question}
     """
@@ -95,66 +95,89 @@ Now, the user's request is: {query}
     """
     return prompt
 
-# def get_panda_code(text: str, date: datetime, type: str) -> str:
-#     prompt = """ 
-#     Eres un asistente personal llamado Asiri y la persona a la cual asistes te hace una solicitud, la solicitud es: """+ text+""".
 
-#     Analizando la solicitud que te dio la persona y sabiendo que tienes un .csv llamado tasks.csv y 
-#     la fecha de hoy, que es""" + str(date) + """tienes que generar código usando la biblioteca de python pandas,
-#       este código debe satisfacer totalmente la solicitud del asistido.
+def talk(query: str):
+    prompt = f"""
+    You are a personal assistant named Asiri. The person you are assisting will give you a task they want you to schedule. This is the task: {query}
 
-#     Las solicitudes del usuario pueden ser de distinto tipo, el tipo de la solicitud en este caso es: """+type+""".
-#     Las solicitudes pueden tener 3 valores diferentes: 'GET', 'POST', 'REMOVE'.
-#     Si es 'GET' significa que debes hacer una consulta a tasks.csv usando lo que te dice el usuario.
-#     Si es 'POST' significa que debes crear una nueva tarea en tasks.csv usando lo que te dice el usuario.
-#     Si es 'REMOVE' significa que debes borrar una tarea de tasks.csv usando lo que te dice el usuario.
+    You must determine if the task the user wants to save is an atomic task. You will do this by asking the user something, either a not-so-basic requirement but important for that task.
 
-#     Ejemplos:
+    Here are some examples:
 
-#     Ejemplo 1:
-#     Solicitud: Agéndame una reunion con un cliente para el 14 de julio a las 10
-#     Explicación: El usuario está pidiendo que se cree una nueva tarea, por tanto es 'POST' la solicitud
-#     Respuesta: 
+    Example 1:
+    Request: Schedule going to a friend's wedding on Saturday
+    Response: Do you have a suit?
 
-# def agregar_tarea(fecha, descripcion):
-#     # Verificar si el archivo CSV existe
-#     if os.path.exists('tasks.csv'):
-#         # Leer el archivo CSV existente
-#         df = pd.read_csv('tasks.csv')
-#     else:
-#         # Crear un DataFrame vacío con las columnas necesarias
-#         df = pd.DataFrame(columns=['Nombre', 'Fecha'])
+    Example 2:
+    Request: Save request passport renewal on Monday
+    Response: Do you have passport photos?
 
-#     # Crear un nuevo DataFrame con la tarea a agregar
-#     nueva_tarea = pd.DataFrame({'Nombre': [nombre], 'Fecha': [fecha]})
+    Example 3:
+    Request: Add business trip to New York on October 15
+    Response: Have you booked a hotel in New York?
 
-#     # Agregar la nueva tarea al DataFrame existente
-#     df = pd.concat([df, nueva_tarea], ignore_index=True)
+    Example 4:
+    Request: Save a date with my partner on the 14th
+    Response: None
 
-#     # Guardar el DataFrame actualizado en el archivo CSV
-#     df.to_csv('tasks.csv', index=False)
+    You have an only chance to make a question, so take sure to ask the most important thing for the task.
+    Keep in mind that not all tasks require a question. Some can be atomic and simply not require anything else. In such a case, respond with: None in string format.
+    Don't make questions about time, just questions that implies do some special task (action no basic) for the person.
 
-# fecha = '2024-07-14'
-# nombre = 'Reunion con un cliente'
+"""
+    return prompt
 
-# agregar_tarea(fecha, nombre)
+def split_task(task: str, conversation:Conversation):
+    today = datetime.today().strftime('%Y-%m-%d')
+    prompt = f"""
+    You are a personal assistant named Asiri. The person you are assisting wants to schedule the following task: {task}. Additionally, you have the following dialogue with them that may provide more context on what they might need: \n
+    {conversation}. 
+    It is known that today's date is: {today}.
 
-#     Ejemplo 2:
-#     Solicitud: Qué compromisos tengo para el 13 de julio
-#     Explicación: El usuario está pidiendo una consulta a la base de datos pasando como filtro cierta fecha, entonces es una solicitud 'GET'.
-#     Respuesta:
+    Now, using all the context, you must take the given task and return, based on the user's needs according to the conversation, a list of possible tasks they need to complete. These tasks should not be basic; they should involve additional work, such as going somewhere or doing something that requires effort. The response should be in the following format:
+    Response: [Task1_with_date, Task2_with_date"]
+
+    Example 1:
+    Task: Schedule going to a friend's wedding on Saturday
+    Conversation:
+        Asiri says: Do you have a suit?
+        Person says: No
+        Asiri says: Then you need to buy one
+    Response: [Add buy a suit on Friday, Add go to a friend's wedding on Saturday]
+
+    Example 2:
+    Task: Save request passport renewal on Monday
+    Conversation:
+        Asiri says: Do you have passport photos?
+        Person says: No
+        Asiri says: Then you need to take new photos
+    Response: [Add take passport photos on Sunday, Add request passport renewal on Monday]
     
-#     def filtrar_tareas(fecha):
-#         df = pd.read_csv('tasks.csv')
-#         df['Fecha'] = pd.to_datetime(df['Fecha'])
-#         fecha = datetime.strptime(fecha, '%Y-%m-%d')
-#         tareas_filtradas = df[df['Fecha'] == fecha]
-#         return tareas_filtradas
+    Example 3:
+    Task: Add business trip to New York on October 15
+    Conversation:
+        Asiri says: Have you booked a hotel in New York?
+        Person says: No
+        Asiri says: Then you need to book one
+    Response: [Add book a hotel in New York today, Add business trip to New York on October 15]
 
-#     fecha = '2024-07-13'
-#     tareas_filtradas = filtrar_tareas(fecha)
+    Don't split the task into more than two taks, and a task can't be anything that has to do with answering a question to you.
+    It's important that the tasks are related to the main task and are related to the conversation.
+    The tasks in the array must be related to the main task and the need that arises from the conversation.
+"""
+    return prompt
 
-#     Omite la palabra python al inicio del codigo, devuelve un codigo ejecutable de python, sé cuidadoso con los nombres de las variables fuera de la funciones,
-#     deben tener el mismo nombre que se especifica. Tampoco hagas importanciones de ningún tipo, se asume que existe pandas como pd, que tienes la libreria os y que datetime tambien está importada
-# """
-#     return prompt
+def is_atomic_task(conversations):
+    prompt = f"""
+    You are a personal assistant named Asiri. The person you are assisting has been talking to you about a task they want to schedule. 
+    You have been given the following conversation to help you determine if the task is atomic or not: 
+    {conversations}.
+
+    That the task is atomic implies that given the conversation has not arisen in addition to the main task another task dibod to some lack or need of the user.
+
+    
+    If the task is atomic, respond with: True
+    If the task is not atomic, respond with: False
+    """
+    return prompt
+
