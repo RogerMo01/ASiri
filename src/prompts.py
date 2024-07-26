@@ -143,7 +143,7 @@ def split_task(task: str, conversation:Conversation):
         Asiri says: Do you have a suit?
         Person says: No
         Asiri says: Then you need to buy one
-    Response: [Buy a suit on Friday, Go to a friend's wedding on Saturday]
+    Response: [Add buy a suit on Friday, Add go to a friend's wedding on Saturday]
 
     Example 2:
     Task: Save request passport renewal on Monday
@@ -151,7 +151,7 @@ def split_task(task: str, conversation:Conversation):
         Asiri says: Do you have passport photos?
         Person says: No
         Asiri says: Then you need to take new photos
-    Response: [Take passport photos on Sunday, Request passport renewal on Monday]
+    Response: [Add take passport photos on Sunday, Add request passport renewal on Monday]
     
     Example 3:
     Task: Add business trip to New York on October 15
@@ -159,7 +159,7 @@ def split_task(task: str, conversation:Conversation):
         Asiri says: Have you booked a hotel in New York?
         Person says: No
         Asiri says: Then you need to book one
-    Response: [Book a hotel in New York today, Business trip to New York on October 15]
+    Response: [Add book a hotel in New York today, Add business trip to New York on October 15]
 
     Don't split the task into more than two taks, and a task can't be anything that has to do with answering a question to you.
     It's important that the tasks are related to the main task and are related to the conversation.
@@ -167,68 +167,17 @@ def split_task(task: str, conversation:Conversation):
 """
     return prompt
 
+def is_atomic_task(conversations):
+    prompt = f"""
+    You are a personal assistant named Asiri. The person you are assisting has been talking to you about a task they want to schedule. 
+    You have been given the following conversation to help you determine if the task is atomic or not: 
+    {conversations}.
 
+    That the task is atomic implies that given the conversation has not arisen in addition to the main task another task dibod to some lack or need of the user.
 
-# def get_panda_code(text: str, date: datetime, type: str) -> str:
-#     prompt = """ 
-#     Eres un asistente personal llamado Asiri y la persona a la cual asistes te hace una solicitud, la solicitud es: """+ text+""".
-
-#     Analizando la solicitud que te dio la persona y sabiendo que tienes un .csv llamado tasks.csv y 
-#     la fecha de hoy, que es""" + str(date) + """tienes que generar código usando la biblioteca de python pandas,
-#       este código debe satisfacer totalmente la solicitud del asistido.
-
-#     Las solicitudes del usuario pueden ser de distinto tipo, el tipo de la solicitud en este caso es: """+type+""".
-#     Las solicitudes pueden tener 3 valores diferentes: 'GET', 'POST', 'REMOVE'.
-#     Si es 'GET' significa que debes hacer una consulta a tasks.csv usando lo que te dice el usuario.
-#     Si es 'POST' significa que debes crear una nueva tarea en tasks.csv usando lo que te dice el usuario.
-#     Si es 'REMOVE' significa que debes borrar una tarea de tasks.csv usando lo que te dice el usuario.
-
-#     Ejemplos:
-
-#     Ejemplo 1:
-#     Solicitud: Agéndame una reunion con un cliente para el 14 de julio a las 10
-#     Explicación: El usuario está pidiendo que se cree una nueva tarea, por tanto es 'POST' la solicitud
-#     Respuesta: 
-
-# def agregar_tarea(fecha, descripcion):
-#     # Verificar si el archivo CSV existe
-#     if os.path.exists('tasks.csv'):
-#         # Leer el archivo CSV existente
-#         df = pd.read_csv('tasks.csv')
-#     else:
-#         # Crear un DataFrame vacío con las columnas necesarias
-#         df = pd.DataFrame(columns=['Nombre', 'Fecha'])
-
-#     # Crear un nuevo DataFrame con la tarea a agregar
-#     nueva_tarea = pd.DataFrame({'Nombre': [nombre], 'Fecha': [fecha]})
-
-#     # Agregar la nueva tarea al DataFrame existente
-#     df = pd.concat([df, nueva_tarea], ignore_index=True)
-
-#     # Guardar el DataFrame actualizado en el archivo CSV
-#     df.to_csv('tasks.csv', index=False)
-
-# fecha = '2024-07-14'
-# nombre = 'Reunion con un cliente'
-
-# agregar_tarea(fecha, nombre)
-
-#     Ejemplo 2:
-#     Solicitud: Qué compromisos tengo para el 13 de julio
-#     Explicación: El usuario está pidiendo una consulta a la base de datos pasando como filtro cierta fecha, entonces es una solicitud 'GET'.
-#     Respuesta:
     
-#     def filtrar_tareas(fecha):
-#         df = pd.read_csv('tasks.csv')
-#         df['Fecha'] = pd.to_datetime(df['Fecha'])
-#         fecha = datetime.strptime(fecha, '%Y-%m-%d')
-#         tareas_filtradas = df[df['Fecha'] == fecha]
-#         return tareas_filtradas
+    If the task is atomic, respond with: True
+    If the task is not atomic, respond with: False
+    """
+    return prompt
 
-#     fecha = '2024-07-13'
-#     tareas_filtradas = filtrar_tareas(fecha)
-
-#     Omite la palabra python al inicio del codigo, devuelve un codigo ejecutable de python, sé cuidadoso con los nombres de las variables fuera de la funciones,
-#     deben tener el mismo nombre que se especifica. Tampoco hagas importanciones de ningún tipo, se asume que existe pandas como pd, que tienes la libreria os y que datetime tambien está importada
-# """
-#     return prompt

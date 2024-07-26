@@ -76,21 +76,44 @@ def response_generator(last_msg):
     # Possibly is an answer
     elif db_use == NO_DB and not current_conversation.is_none() and crud_flag == POST:
         current_conversation.add_dialogue("User",last_msg)
+        # is_atomic_prompt = is_atomic_task(current_conversation)
+        # is_atomic_response = client(is_atomic_prompt)
+        # print(f'IS_ATOMIC_RESPONSE: {is_atomic_response}')
+        # if is_atomic_response == 'False':
+        print("SPLITTING TASK...")
         split_prompt = split_task(last_msg,current_conversation)
         split_response = client(split_prompt)
         print(f"Split response: {split_response}")
         start = split_response.index('[')
         end = split_response.index(']')
         response_array = split_response[start+1:end].split(',')
-        
+    
         print(f"Response array: {response_array}")
-        # if len(response_array) != 0:   # if there are tasks to add
-        #   for res in response_array:
-        #       Post(res)
-        main_task = current_conversation.get_first()
-        Post(main_task)
+        print(f'{len(response_array)}')
+        if len(response_array) != 0 and response_array[0] != '':   # if there are tasks to add
+            db_response = ''
+            for i in range(len(response_array)):
+                print(f'RESPONSE_ARRAY[i]: {response_array[i]}')
+                post_response = Post(response_array[i])
+                print(f'POST RESPONSE: {post_response}')
+                db_response = f' {db_response} {i}: {post_response} \n'
+        else: 
+            main_task = current_conversation.get_first()[1]
+            db_response = Post(main_task)
+    
+        # else:
+        #     main_task = current_conversation.get_first()[1]
+        #     db_response = Post(main_task)
+            
+        # clean the conversations and iterpret dataframe
         current_conversation.clean_dialogues()
         Crud_flag.clean_crud_flag()
+        interpretation_prompt = interpret_results(last_msg, db_response) 
+        response = client(interpretation_prompt) if not is_talk else db_response
+        
+        
+            
+        print(f"Interpreted response: {response}")
 
     # 🦦 Don't use database
     else:   

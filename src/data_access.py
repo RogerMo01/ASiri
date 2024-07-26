@@ -25,7 +25,8 @@ def Get(question: str):
     return response
 
 def Post(question: str):
-    question = question[1]
+    print(f'Question: {question}')
+    # question = question[1]
     global df
     extract_action_prompt = extract_action(question)
     task_action = llm(extract_action_prompt)
