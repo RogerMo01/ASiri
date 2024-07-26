@@ -91,16 +91,13 @@ Examples:
 1)  question: I need to go shopping on Sunday.
     response: Go shopping
 
-2)  question: Can you help me clean the house?
-    response: Clean the house
-
-3)  question: Let's organize a meeting for tomorrow.
+2)  question: Let's organize a meeting for tomorrow.
     response: Organize a meeting
 
-4)  question: Add going to the beach with my friends on August 1st.
+3)  question: Add going to the beach with my friends on August 1st.
     response: Go to the beach
 
-5)  question: Go to dinner with my girlfriend on Sunday.
+4)  question: Go to dinner with my girlfriend on Sunday.
     response: Go to dinner with my girlfriend
 
 Now, the question is:
@@ -175,6 +172,8 @@ The days of the week are as follows:
 Now, extract the date from the following question:
 
 {question}
+
+If the date is mentioned as 'today', return the current date in the format YYYY-MM-DD.
 
 If the date is in the format 'August 1', provide the exact date. If the date refers to a day of the week (e.g. 'Saturday'),
 return the date corresponding to the next occurrence of that day based on today's date.
