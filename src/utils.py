@@ -1,4 +1,6 @@
 from datetime import datetime
+import pandas as pd
+import csv 
 
 class Task:
     def __init__(self, name, date) -> None:
@@ -100,3 +102,41 @@ class Crud_flag:
 # x = load_crud_flag()
 # print(x)
 
+
+def add_task_to_csv(df, task, date, filename='tasks.csv'):
+    """
+    Adds new task to an existing CSV file and updates the DataFrame.
+    
+    Args:
+        df (pandas.DataFrame): The DataFrame containing the tasks.
+        filename (str): The name of the CSV file to update.
+        
+    Returns:
+        pandas.DataFrame: The updated DataFrame with the new tasks.
+    """
+    # Check if the DataFrame is empty
+    if df.empty:
+        print("The DataFrame is empty. No tasks to add.")
+        return df
+
+    # Read the existing content from the CSV file
+    try:
+        with open(filename, mode='r', newline='') as file:
+            reader = csv.reader(file)
+            data = list(reader)
+    except FileNotFoundError:
+        print(f"File {filename} not found. Creating a new file.")
+        data = [['Task_Name', 'Date']]  # Create header if file doesn't exist
+
+    # Add new tasks to the list
+    new_tasks = [[task, date]]
+    data.extend(new_tasks)
+
+    # Write the updated data back to the CSV file
+    with open(filename, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(data)
+
+    # Update the DataFrame with the new tasks
+    updated_df = pd.read_csv(filename)
+    return updated_df

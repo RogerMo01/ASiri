@@ -102,8 +102,9 @@ def response_generator(last_msg):
 
 
     print("RESPONSE GENERATION ENDED")
-
-    # Simulate response time
+    
+    
+    # Simulate response time 🚨 AQUI DA ERROR
     for word in response.split():
         yield word + " "
         t.sleep(0.05)
