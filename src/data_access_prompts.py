@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import pandas as pd
 
 def info_df(df):
@@ -21,7 +21,7 @@ The dataset has {len(df)} rows.
     return info
 
 
-def get_query(question: str):
+def get_query(question: str, date):
     today = datetime.today().strftime('%Y-%m-%d')
     query = f"""
 Today is {today}, this is usefull if you have to response using dates.
@@ -41,10 +41,52 @@ Examples:
 
 Now, the question is:
 {question}
+And the date of the question is {date}
 """
     return query
 
-def remove_query(question: str):
+def extract_task(question: str, task_names, task_dates):
+    today = datetime.today().strftime('%Y-%m-%d')
+    task_names_list = "\n".join([f"{i+1}. {task}" for i, task in enumerate(task_names)])
+    # task_dates_list = "\n".join([f"{i+1}. {date}" for i, date in enumerate(task_dates)])
+    query = f"""
+
+You are a semantic similarity helper. I will provide you with a task and a list of other tasks. 
+Your job is to determine if any of the tasks in the list have the same meaning.
+
+Here are the other tasks: {task_names_list}
+
+Your response must be the task that you consider equal to {question} based to in the provided tasks before.
+Note that your answer must be exactly equal to an existing task.
+
+Examples:
+Question is: Delete go to my friend's birthday 
+And exists: Go to Pedro's birthday on Monday
+Then the answer is: Delete Go to Pedro's birthday on Monday
+
+Question is: Unschedule my today meet.  
+And exists: Go to the meeting {today} 
+Then the answer is: Delete Go to the meeting {today}
+
+Question is: Cancel my date with Benicio.
+And exists: Date with Benicio on Thursday 2024-10-12
+Then the answer is: Delete Date with Benicio on Thursday 2024-10-12 
+
+Question is: Delete the task buy dress for the party
+And exists: Buy dress for the celebration.
+Then the answer is: Delete Buy dress for the celebration
+
+Note that you must concentrate in the task only, and return the complete text that identificate to that task.
+
+Question is:
+
+If you don't find any task that matches then the answer is: No task
+
+Your response must be based in the existing tasks
+"""
+    return query
+
+def remove_query(task: str):
     today = datetime.today().strftime('%Y-%m-%d')
     query = f"""
 Today is {today}, this is usefull if you have to response using dates.
@@ -66,7 +108,7 @@ Examples:
    response: `df[df['Task_Name'] != "some_task"]`
 
 Now, the question is:
-{question}
+{task}
 """
     return query
 
@@ -98,30 +140,13 @@ Examples:
     response: Go to the beach
 
 4)  question: Go to dinner with my girlfriend on Sunday.
-    response: Go to dinner with my girlfriend
+    response: Go to dinner with my girlfriend    
 
 Now, the question is:
 {question}
 """
     return query
 
-
-# def check_task_equivalence(task_action, task_names, task_dates):
-#     task_names_list = "\n".join([f"{i+1}. {task}" for i, task in enumerate(task_names)])
-#     task_dates_list = "\n".join([f"{i+1}. {date}" for i, date in enumerate(task_dates)])
-#     query = f"""
-# You are a semantic similarity assistant. I will provide you with a task and a list of other tasks. Your job is to determine if any of the tasks in the list have the same meaning as the provided task.
-
-# Here is the task:
-# {task_action}
-
-# Here are the other tasks:
-
-# {task_names_list}
-
-# Please answer with "yes" if any of the tasks have the same meaning as the provided task, otherwise answer with "no".
-# """
-#     return query
 
 def check_task_equivalence(task_action, task_names,date, task_dates):
     task_names_list = "\n".join([f"{i+1}. {task}" for i, task in enumerate(task_names)])
@@ -146,7 +171,7 @@ Returns "yes" if it finds an exact match on the date and similar task; otherwise
 
 
 def extract_date(question):
-    today = datetime.date.today()
+    today = datetime.today()
     today_str = today.strftime('%Y-%m-%d')
     weekday = today.strftime('%A')
 

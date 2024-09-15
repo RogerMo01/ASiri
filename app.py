@@ -44,6 +44,7 @@ def response_generator(last_msg):
         db_response = None
         if crud_operation == GET:
             db_response = Get(last_msg)
+            print(f"APP: After Get -> {db_response}")
         elif crud_operation == POST:
              Crud_flag.edit_crud_flag(POST)
              # add the main task to add
@@ -53,6 +54,7 @@ def response_generator(last_msg):
              print(f'TALK = {talk_result}')
              if talk_result == 'None':    # the task is atomic
                 db_response = Post(last_msg)   # add the task to db
+                print(f"APP: After Post -> {db_response}")
                 current_conversation.clean_dialogues()   # clean the conversation
                 Crud_flag.clean_crud_flag()
              else:
@@ -62,6 +64,7 @@ def response_generator(last_msg):
 
         elif crud_operation == REMOVE:
             db_response = Remove(last_msg)
+            print(f"APP: After Remove -> {db_response}")
 
 
         print(f"Uninterpreted response: {db_response}")

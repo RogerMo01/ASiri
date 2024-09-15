@@ -79,30 +79,6 @@ class Crud_flag:
             file.write(flag)
 
 
-# c = Conversation()
-# d = [("Pedro","Tienes traje?"),("Juan","Si, tengo"), ("Pedro", "Ah, vale")]
-# c.dialogues = d
-# c.add_dialogue("Pedro","Hola")
-
-# print(c)
-# print(datetime.now().time())
-
-# split_response = '[Buy a suit on Friday, Go to a friend\'s wedding on Saturday]'
-# start = split_response.index('[')
-# end = split_response.index(']')
-# response_array = split_response[start+1:end].split(',')
-# print(response_array)
-
-# x = load_crud_flag()
-# print(x)
-
-# edit_crud_flag('POST')
-
-# clean_crud_flag()
-# x = load_crud_flag()
-# print(x)
-
-
 def add_task_to_csv(df, task, date, filename='tasks.csv'):
     """
     Adds new task to an existing CSV file and updates the DataFrame.
@@ -114,10 +90,10 @@ def add_task_to_csv(df, task, date, filename='tasks.csv'):
     Returns:
         pandas.DataFrame: The updated DataFrame with the new tasks.
     """
-    # Check if the DataFrame is empty
-    if df.empty:
-        print("The DataFrame is empty. No tasks to add.")
-        return df
+    # # Check if the DataFrame is empty
+    # if df.empty:
+    #     print("The DataFrame is empty. No tasks to add.")
+    #     return df
 
     # Read the existing content from the CSV file
     try:
@@ -140,3 +116,35 @@ def add_task_to_csv(df, task, date, filename='tasks.csv'):
     # Update the DataFrame with the new tasks
     updated_df = pd.read_csv(filename)
     return updated_df
+
+
+
+
+def delete_task_from_csv(df, task, date, filename = 'tasks.csv'):
+    date_matter = date is not None
+    task_matter = task is not None
+    if df.empty:
+        print("The DataFrame is empty. No tasks to remove.")
+        return df
+    try:
+        # Leer el archivo CSV existente
+        with open(filename, mode='r', newline='') as file:
+            reader = csv.reader(file)
+            data = list(reader)
+    except FileNotFoundError:
+        print(f"File {filename} not found.")
+        return pd.DataFrame()  # Retornar un DataFrame vacío si no existe el archivo
+
+    # Filtrar las filas que no coincidan con la tarea y la fecha a eliminar
+    data_filtered = [row for row in data if not ((task_matter and row[0] == task) and (date_matter and row[1] == date))]
+
+    # Sobrescribir el archivo CSV con los datos filtrados
+    with open(filename, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(data_filtered)
+
+    # Actualizar el DataFrame con los datos filtrados
+    updated_df = pd.read_csv(filename)
+    return updated_df
+
+
