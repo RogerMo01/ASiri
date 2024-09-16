@@ -1,2 +1,2 @@
 # ASiri
-A personal assistant for routine tasks
+A personal assistant for routine tasks, powered by Gemini
