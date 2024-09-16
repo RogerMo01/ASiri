@@ -79,4 +79,6 @@ from datetime import datetime
 df = pd.read_csv('tasks.csv')
 
 df = df[df['Date'] != '2024-07-19']
-print(df)
+df['Date'] =  pd.to_datetime(df['Date'])
+x = df[df['Date'].dt.month == 9]
+print(x)

@@ -1,7 +1,7 @@
 import pandas as pd
 from src.gemini import Gemini
 from src.data_access_prompts import *
-from src.utils import format_python_code, add_task_to_csv, delete_task_from_csv
+from src.utils import format_python_code, add_task_to_csv, delete_task_from_csv, uses_dt
 
 llm = Gemini()
 df = pd.read_csv('tasks.csv')
@@ -11,7 +11,7 @@ info_prompt = info_df(df)
 
 
 def Get(question: str):
-
+    global df
     extract_date_prompt = extract_date(question)
     extracted_date = llm(extract_date_prompt)
     count = 0
@@ -24,17 +24,33 @@ def Get(question: str):
     print(f"GET: The extracted_date is -> {extracted_date}")
     query_prompt = get_query(question, extracted_date)
     code = llm(info_prompt + query_prompt)
-
+    df_copy = df.copy()
     code = format_python_code(code)
-    print(f"GET: The code is -> {code}")
+    
+
+    print(f"GET: The first code is -> {code}")
     try:
-        response = eval(code)
-    except:
+        if uses_dt(code):
+            df['Date'] = pd.to_datetime(df['Date'])
+            response = eval(code)
+            print(f"GET: The code is -> {code}")
+
+            df = df_copy.copy()
+        else: response = eval(code)
+
+    except Exception as e:
+        print(f'GET: There is an exception -> {e}')
         count = 0
         while True:
             try:
                 code = llm(info_prompt + query_prompt)
-                response = eval(code)
+                if uses_dt(code):
+                    df_copy = df.copy()
+                    df['Date'] = pd.to_datetime(df['Date'])  # convert to datetime.
+                    response = eval(code)
+                    df = df_copy.copy()
+                else:
+                    response = eval(code)
                 break
             except:
                 count+=1
@@ -92,7 +108,7 @@ def Post(question: str):
 
 def Remove(question: str):
     global df
-    task_prompt = extract_task(question,df['Task_Name'], df['Date'])
+    task_prompt = extract_task(question,df['Task_Name'])
     task = llm(task_prompt)
     count = 0
     while task == 'No task':
