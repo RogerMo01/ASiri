@@ -79,7 +79,7 @@ class Crud_flag:
             file.write(flag)
 
 
-def add_task_to_csv(df, task, date, filename='tasks.csv'):
+def add_task_to_csv(df, task: str, date, filename='tasks.csv'):
     """
     Adds new task to an existing CSV file and updates the DataFrame.
     
@@ -96,6 +96,9 @@ def add_task_to_csv(df, task, date, filename='tasks.csv'):
     #     return df
 
     # Read the existing content from the CSV file
+
+# Convertir la columna a datetime
+
     try:
         with open(filename, mode='r', newline='') as file:
             reader = csv.reader(file)
@@ -105,7 +108,7 @@ def add_task_to_csv(df, task, date, filename='tasks.csv'):
         data = [['Task_Name', 'Date']]  # Create header if file doesn't exist
 
     # Add new tasks to the list
-    new_tasks = [[task, date]]
+    new_tasks = [[task.lower(), date]]
     data.extend(new_tasks)
 
     # Write the updated data back to the CSV file
@@ -148,3 +151,5 @@ def delete_task_from_csv(df, task, date, filename = 'tasks.csv'):
     return updated_df
 
 
+def uses_dt(code: str):
+    return code.__contains__('.dt')

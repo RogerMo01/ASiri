@@ -39,52 +39,55 @@ Examples:
 3) question: What tasks do I have for today
    response: `df[df['Date'] == {today}]`
 
+4) question: Get the tasks for January please
+   response: df[df['Date'].dt.month == 9]
+
+
 Now, the question is:
 {question}
 And the date of the question is {date}
 """
     return query
 
-def extract_task(question: str, task_names, task_dates):
-    today = datetime.today().strftime('%Y-%m-%d')
+def extract_task(question: str, task_names):
     task_names_list = "\n".join([f"{i+1}. {task}" for i, task in enumerate(task_names)])
-    # task_dates_list = "\n".join([f"{i+1}. {date}" for i, date in enumerate(task_dates)])
     query = f"""
 
-You are a semantic similarity helper. I will provide you with a task and a list of other tasks. 
-Your job is to determine if any of the tasks in the list have the same meaning.
+You are a semantic similarity helper. I will provide you with a deletion query and a list of tasks. 
+Your job is to determine if any of the tasks in the list have the same meaning than query, in that case you have
+to resonse only with the matching task name, just exactly as it appears in the list.
+In case any task does not match, your response must be exactly: NO_TASK
 
-Here are the other tasks: {task_names_list}
 
-Your response must be the task that you consider equal to {question} based to in the provided tasks before.
-Note that your answer must be exactly equal to an existing task.
+Let me show you some examples:
 
-Examples:
 Question is: Delete go to my friend's birthday 
 And exists: Go to Pedro's birthday on Monday
-Then the answer is: Delete Go to Pedro's birthday on Monday
+Then the answer is: Go to Pedro's birthday on Monday
 
 Question is: Unschedule my today meet.  
-And exists: Go to the meeting {today} 
-Then the answer is: Delete Go to the meeting {today}
+And exists: Go to the meeting
+Then the answer is: Go to the meeting
 
 Question is: Cancel my date with Benicio.
-And exists: Date with Benicio on Thursday 2024-10-12
-Then the answer is: Delete Date with Benicio on Thursday 2024-10-12 
+And exists: Date with Benicio on Thursday
+Then the answer is: Date with Benicio on Thursday 
 
 Question is: Delete the task buy dress for the party
 And exists: Buy dress for the celebration.
-Then the answer is: Delete Buy dress for the celebration
+Then the answer is: Buy dress for the celebration
 
-Note that you must concentrate in the task only, and return the complete text that identificate to that task.
 
-Question is:
+Here are the tasks: 
+{task_names_list}
 
-If you don't find any task that matches then the answer is: No task
+And the query is:
+{question}
 
-Your response must be based in the existing tasks
+Note that your answer must be exactly equal to an existing task.
 """
     return query
+
 
 def remove_query(task: str):
     today = datetime.today().strftime('%Y-%m-%d')
@@ -106,6 +109,7 @@ Examples:
 
 4) question: Delete "some_task"
    response: `df[df['Task_Name'] != "some_task"]`
+
 
 Now, the question is:
 {task}
@@ -199,6 +203,7 @@ Now, extract the date from the following question:
 {question}
 
 If the date is mentioned as 'today', return the current date in the format YYYY-MM-DD.
+If the date is mentioned as 'tomorrow', return the date in the format YYYY-MM-DD.
 
 If the date is in the format 'August 1', provide the exact date. If the date refers to a day of the week (e.g. 'Saturday'),
 return the date corresponding to the next occurrence of that day based on today's date.
